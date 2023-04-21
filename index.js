@@ -25,7 +25,7 @@ const client = new Discord.Client({
   },
 });
 
-const debug = true;
+const debug = false;
 let guhmode = false;
 
 const emotions = {
@@ -121,14 +121,14 @@ client.on("messageCreate", async (message) => {
               `an error occurred (possible ratelimit, please be patient! if not, please ping @syndicated): \`\`\`js\n${error}\n\`\`\``
             );
 
-            await sleep(15000);
+            await sleep(30000);
             await doAwait();
 
             await errorMessage.delete();
           } else {
             console.log(error);
 
-            await sleep(15000);
+            await sleep(30000);
             await doAwait();
           }
         }
