@@ -73,7 +73,7 @@ async function doAICompletion(message) {
       console.log(answer);
 
       messages.push({ role: "assistant", content: answer });
-      message.reply(answer);
+      message.channel.send(answer);
     } catch (error) {
       console.log(error);
 
@@ -121,11 +121,23 @@ client.on("messageCreate", async (message) => {
     });
 
     console.log(
-      toOxfordComma([
-        ...(await message.guild.members.fetch()).map(
-          (member) => member.user.username
-        ),
-      ])
+      {
+        role: "user",
+        content: `my name is ${message.author.username}. my discord tag is ${
+          message.author.tag
+        }. you are in a channel called #${
+          message.channel.name
+        }. the people in this server are: ${toOxfordComma([
+          ...guildMembers.map((member) => member.user.username),
+        ])}. the online members in this server are: ${toOxfordComma([
+          ...guildMembers.filter(member => member.presence && member.presence.status !== "offline").map((member) => member.user.username),
+        ])}. the offline members in this server are: ${toOxfordComma([
+          ...guildMembers.filter(member => member.presence && member.presence.status !== "online" && member.presence.status !== "idle" && member.presence.status !== "dnd").map((member) => member.user.username),
+        ])}
+        YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. if you understand, answer this: ${
+          message.content
+        }`,
+      }
     );
 
     // add to queue
