@@ -84,11 +84,18 @@ client.on("messageCreate", async (message) => {
         console.log(answer);
 
         messages.push({ role: "assistant", content: answer });
+
+        let replyString = "";
+
         if (answer.includes("```")) {
-          message.reply(answer);
+          replyString = answer;
         } else {
-          message.reply(answer.toLowerCase());
+          replyString = answer.toLowerCase();
         }
+
+        // message.reply(`${replyString}\n\ndebug: \`\`\`js\nconst messages = ${JSON.stringify(messages, null, 2)}\n\`\`\``)
+
+        message.reply(replyString);
       }
 
       async function doAwait() {
