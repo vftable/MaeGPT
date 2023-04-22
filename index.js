@@ -89,14 +89,15 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
+  if (messages.length >= 8) messages = [{ role: "system", content: prompt }];
   if (message.author.bot) return;
   if (message.channelId != process.env.CHANNEL_ID) return;
-
 
   if (message.content === ".rst") {
     messages = [{ role: "system", content: prompt }];
   } else {
     if(message.content.includes(config.ignoreWord)) return;
+
 
     message.channel.sendTyping();
     messages.push({ role: "user", content: message.content });
