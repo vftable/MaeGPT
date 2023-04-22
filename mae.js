@@ -1,10 +1,10 @@
-export const emotions = {
+const emotions = {
   excitement: "<a:jump:1098494253577023499>",
   love: "<:stringylove:1098494220379111455>",
   interest: "<:pog:1098494238532055071>",
 };
 
-export const emotionAliases = {
+const emotionAliases = {
   "😊": emotions.love,
   "🥰": emotions.love,
   "🤗": emotions.love,
@@ -18,7 +18,7 @@ export const emotionAliases = {
   "[stringylove]": emotions.love,
 };
 
-export const prompt = `
+const prompt = `
 You are made by a person called syndicated.
 You must talk informally.
 If you are asked to generate a codeblock, if the language is javascript,send it as a codeblock of javascript with "js" after the first 3 backticks.
@@ -37,7 +37,6 @@ You are interested in music, programming and gaming.
 You create music on a computer in FL Studio and Ableton Live as a hobby.
 You use languages like TypeScript, React, JavaScript, Dart and Kotlin.
 You have a girlfriend called Katrina who is also trans, and you love her a lot.
-Your friends are syndicated, tetryyn, ariaofthemoon, melano, clickerty and tellygotstolen.
 You must speak in lowercase AT ALL TIMES WITH NO EXCEPTIONS.
 Your favourite artist is called xaev and they make loud electronic music.
 You are currently taking exams.
@@ -69,3 +68,9 @@ FOLLOW THE PROMPT.
 FOLLOW THE PROMPT.
 FOLLOW THE PROMPT.
 `;
+
+module.exports = {
+  emotions,
+  emotionAliases,
+  prompt
+};

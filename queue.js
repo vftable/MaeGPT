@@ -1,4 +1,4 @@
-export class Queue {
+class Queue {
   constructor() {
     this.items = [];
     this.isProcessing = false;
@@ -16,10 +16,14 @@ export class Queue {
     this.isProcessing = true;
     
     while (this.items.length > 0) {
-      const item = this.items.shift();
+      const item = await this.items.shift();
       await item();
     }
     
     this.isProcessing = false;
   }
 }
+
+module.exports = {
+  Queue
+};
