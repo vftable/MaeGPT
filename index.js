@@ -57,6 +57,7 @@ client.once("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
+  if (messages.length >= 8) messages = [{ role: "system", content: prompt }];
   if (message.author.bot) return;
   if (message.channelId === process.env.CHANNEL_ID) {
     if (message.content === ".rst") {
