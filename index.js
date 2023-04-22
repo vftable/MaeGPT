@@ -113,7 +113,7 @@ client.on("messageCreate", async (message) => {
       ])}. the online members in this server are: ${toOxfordComma([
         ...guildMembers.filter(member => member.presence && member.presence.status !== "offline").map((member) => member.user.username),
       ])}. the offline members in this server are: ${toOxfordComma([
-        ...guildMembers.filter(member => member.presence && member.presence.status === "offline").map((member) => member.user.username),
+        ...guildMembers.map((member) => member.user.username).filter(username => !(guildMembers.filter(member => member.presence && member.presence.status !== "offline").map((member) => member.user.username)).includes(username)),
       ])}
       YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. if you understand, answer this: ${
         message.content
