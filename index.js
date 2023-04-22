@@ -35,7 +35,8 @@ const client = new Discord.Client({
     Discord.GatewayIntentBits.Guilds,
     Discord.GatewayIntentBits.GuildMessages,
     Discord.GatewayIntentBits.GuildMembers,
-    Discord.GatewayIntentBits.MessageContent,
+    Discord.GatewayIntentBits.GuildPresences,
+    Discord.GatewayIntentBits.MessageContent
   ],
   ws: {
     properties: {
@@ -108,7 +109,12 @@ client.on("messageCreate", async (message) => {
         message.channel.name
       }. the people in this server are: ${toOxfordComma([
         ...guildMembers.map((member) => member.user.username),
-      ])}. YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. if you understand, answer this: ${
+      ])}. the online members in this server are: ${toOxfordComma([
+        ...guildMembers.filter(member => member.presence && member.presence.status !== "offline").map((member) => member.user.username),
+      ])}. the offline members in this server are: ${toOxfordComma([
+        ...guildMembers.filter(member => member.presence && member.presence.status === "offline").map((member) => member.user.username),
+      ])}
+      YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. if you understand, answer this: ${
         message.content
       }`,
     });
