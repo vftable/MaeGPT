@@ -21,7 +21,7 @@ const toOxfordComma = (array) =>
 
 const config = {
   debug: true,
-  ignoreWord: "]",
+  ignoreWord: "[",
 };
 
 const openai_configuration = new Configuration({
