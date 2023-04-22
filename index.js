@@ -134,7 +134,7 @@ client.on("messageCreate", async (message) => {
                 .includes(username)
           ),
       ])}
-      YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. If you are asked to generate a codeblock, if the language is javascript,send it as a codeblock of javascript with "js" after the first 3 backticks. If you understand, answer this: ${
+      YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. ANY HELPFUL INFO CAN GO INSIDE COMMENTS. If you are asked to generate a codeblock, if the language is javascript, send it as a codeblock of javascript with "js" after the first 3 backticks. DON'T FORGET TO PUT CODE INSIDE CODEBLOCKS! If you understand, answer this: ${
         message.content
       }`,
     });
