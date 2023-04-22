@@ -21,7 +21,7 @@ class Queue {
         (() => {
           return null;
         });
-      console.log(item);
+        
       await item();
     }
 
