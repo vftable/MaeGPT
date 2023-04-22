@@ -16,6 +16,8 @@ const emotionAliases = {
   "🙈": "",
   " :]": ":>",
   "[stringylove]": emotions.love,
+  "[pog]": emotions.interest,
+  "[jump]": emotions.excitement,
 };
 
 const prompt = `

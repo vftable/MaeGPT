@@ -2,8 +2,12 @@ require("dotenv").config();
 const Discord = require("discord.js");
 const { Configuration, OpenAIApi } = require("openai");
 
-const { emotions, emotionAliases, prompt } = require("./mae");
+const { emotionAliases, prompt } = require("./mae");
 const { Queue } = require("./queue");
+
+const sleep = (ms) => {
+  return new Promise((r) => setTimeout(r, ms));
+};
 
 const toOxfordComma = (array) =>
   array.length === 2
@@ -17,7 +21,7 @@ const toOxfordComma = (array) =>
 
 const config = {
   debug: true,
-  ignoreWord: "[dragonfruit]",
+  ignoreWord: "]",
 };
 
 const openai_configuration = new Configuration({
@@ -30,6 +34,7 @@ const client = new Discord.Client({
   intents: [
     Discord.GatewayIntentBits.Guilds,
     Discord.GatewayIntentBits.GuildMessages,
+    Discord.GatewayIntentBits.GuildMembers,
     Discord.GatewayIntentBits.MessageContent,
   ],
   ws: {
@@ -46,48 +51,36 @@ let messages = [{ role: "system", content: prompt }];
 async function doAICompletion(message) {
   message.channel.sendTyping();
 
-  const completion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages,
-  });
+  const complete = async () => {
+    try {
+      const completion = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages,
+      });
 
-  let answer = completion.data.choices[0].message.content;
-  const chance = Math.ceil(Math.random() * 10);
+      let answer = completion.data.choices[0].message.content;
 
-  console.log(chance);
-
-  if (chance !== 5) {
-    for (const emotion of Object.values(emotions)) {
-      answer = answer.replace(emotion, "");
-    }
-  }
-
-  const answerEmojis = Object.values(emotions).filter((emotion) =>
-    answer.includes(emotion)
-  );
-
-  if (answerEmojis.length >= 1) {
-    answerEmojis.shift();
-
-    if (answerEmojis.length >= 1) {
-      for (const emoji of answerEmojis) {
-        answer = answer.replace(emoji, "");
+      for (const [emoji, alias] of Object.entries(emotionAliases)) {
+        answer = answer.replace(emoji, alias);
       }
+
+      answer = answer.replace(":a:", "a:");
+      answer = answer.replace("<:jump:", "<a:jump:");
+      answer = answer.toLowerCase();
+
+      console.log(answer);
+
+      messages.push({ role: "assistant", content: answer });
+      message.reply(answer);
+    } catch (error) {
+      console.log(error);
+
+      await sleep(20000);
+      await complete();
     }
-  }
+  };
 
-  for (const [emoji, alias] of Object.entries(emotionAliases)) {
-    answer = answer.replace(emoji, alias);
-  }
-
-  answer = answer.replace(":a:", "a:");
-  answer = answer.replace("<:jump:", "<a:jump:");
-  answer = answer.toLowerCase();
-
-  console.log(answer);
-
-  messages.push({ role: "assistant", content: answer });
-  message.reply(answer);
+  await complete();
 }
 
 client.once("ready", () => {
@@ -102,7 +95,9 @@ client.on("messageCreate", async (message) => {
   if (message.content === ".rst") {
     messages = [{ role: "system", content: prompt }];
   } else {
-    if (message.content.includes(config.ignoreWord)) return;
+    if (message.content.startsWith(config.ignoreWord)) return;
+
+    const guildMembers = await message.guild.members.fetch({ force: true });
 
     message.channel.sendTyping();
     messages.push({
@@ -112,14 +107,22 @@ client.on("messageCreate", async (message) => {
       }. you are in a channel called #${
         message.channel.name
       }. the people in this server are: ${toOxfordComma([
-        ...message.guild.members.cache.map((member) => member.user.username),
+        ...guildMembers.map((member) => member.user.username),
       ])}. YOU MUST TALK IN ALL LOWERCASE EXCEPT IF YOU ARE WRITING CODE, DO NOT SAY ANYTHING AFTER. IF A CODEBLOCK IS IN THE ANSWER, ANSWER WITH ONLY THE CODEBLOCK. if you understand, answer this: ${
         message.content
       }`,
     });
 
+    console.log(
+      toOxfordComma([
+        ...(await message.guild.members.fetch()).map(
+          (member) => member.user.username
+        ),
+      ])
+    );
+
     // add to queue
-    q.enqueue(doAICompletion(message));
+    q.enqueue(() => doAICompletion(message));
   }
 });
 
