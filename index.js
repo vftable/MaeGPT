@@ -67,6 +67,7 @@ async function doAICompletion(message) {
 
       answer = answer.replace(":a:", "a:");
       answer = answer.replace("<:jump:", "<a:jump:");
+      answer = answer.replace("<#:", "<:");
       answer = answer.toLowerCase();
 
       console.log(answer);
